@@ -79,20 +79,6 @@ Computes an **architectural concentration score (0–100)** for each inscription
    - Full scored dataset.
    - Score-based subsets (per 10-point bin).
    - High-score subset (score > 50).
-
-**Outputs (CSV):**
-- `output/edcs_architectural_scores.csv`
-- `output/edcs_architectural_scores_<bin>_<bin+9>.csv`
-- `output/edcs_architectural_scores_gt50.csv`
-- `output/edcs_filtered_inscriptions.csv`
-
-**Key added columns:**
-- `lemmatized_text`
-- `arch_score`
-- `autonomous_terms`
-- `associative_terms`
-- `material_terms`
-
 ---
 
 ### `gliner-eval.py`
@@ -117,10 +103,6 @@ Evaluates **GLiNER NER models** against the dictionary-based architectural terms
 - F1 score
 - Percentage and count of overlapping terms
 - Number of inscriptions with at least one shared term
-
-**Outputs:**
-- Printed comparison table in the console
-- `output/gliner_comparison_metrics_detailed.csv`
 
 ---
 
