@@ -24,9 +24,8 @@ EccLexica is being developed as part of the ANR E-cclesia project.
 │     └── mat_terms.csv
 │   └── sample.csv
 │
-├── output/
-│
 ├── arch-score.py
+├── bibliography.md
 ├── gliner-eval.py
 └── README.md
 ```
