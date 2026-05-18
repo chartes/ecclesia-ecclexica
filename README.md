@@ -24,8 +24,11 @@ EccLexica is being developed as part of the ANR E-cclesia project.
 │     └── mat_terms.csv
 │   └── sample.csv
 │
-├── arch-score.py
-├── bibliography.md
+├── output/
+│
+├── inscr-preprocess.py
+├── inscr-lemmatize.py
+├── inscr-score.py
 ├── gliner-eval.py
 └── README.md
 ```
@@ -40,7 +43,7 @@ The main dataset is not stored in this repository due to its size.
 
 Please download **EDCS_text_cleaned_2022-09-12.json** from Zenodo:
 
-👉 https://zenodo.org/records/7072337
+https://zenodo.org/records/7072337
 
 After downloading, place the file in the following location:
 
@@ -54,31 +57,86 @@ data/EDCS_text_cleaned_2022-09-12.json
 
 ## Scripts
 
-### `arch-score.py`
+This repository includes three standalone command-line scripts for a split workflow:
 
-Computes an **architectural concentration score (0–100)** for each inscription based on the presence and distribution of architectural vocabulary.
+1. `preprocess.py` — filter raw JSON inscription data by date and province.
+2. `lemmatize.py` — lemmatize filtered texts with spaCy.
+3. `score.py` — calculate architectural scores from lemmatized texts.
 
-**Main steps:**
-1. **Filtering**
-   - Date range: 399–1199 CE.
-   - Excludes a predefined list of eastern provinces.
-2. **Lemmatization**
-   - Uses spaCy’s Latin model (`la_core_web_md`) on cleaned interpretive text.
-3. **Scoring**
-   - Uses three term categories:
-     - *Autonomous* (e.g. `basilica`, `ecclesia`)
-     - *Associative* (e.g. `murus`, `porta`)
-     - *Material* (e.g. `marmor`, `aurum`)
-   - Score combines:
-     - Term count
-     - Co-occurrence of term types
-     - Proximity of terms in the text
-     - Term density
-4. **Output generation**
-   - Full scored dataset.
-   - Score-based subsets (per 10-point bin).
-   - High-score subset (score > 50).
 ---
+
+## Requirements
+
+- Python 3.8+
+- `pandas`
+- `numpy`
+- `spacy`
+- `gliner`
+- Latin spaCy model: `la_core_web_md`
+
+Install dependencies if needed:
+
+```bash
+pip install pandas numpy spacy
+python -m spacy download la_core_web_md
+```
+
+---
+
+## 1. Preprocess
+
+This step loads a JSON file, filters inscriptions by the default date range and excluded provinces, and saves the filtered CSV.
+
+```bash
+python preprocess.py \
+  --input data/EDCS_text_cleaned_2022-09-12.json \
+  --output data/edcs_filtered_inscriptions.csv
+```
+
+Use `--exclude-provinces` to supply a comma-separated list of provinces to exclude without an interactive prompt:
+
+```bash
+python preprocess.py --exclude-provinces "Achaia,Aegyptus,Syria" --no-prompt
+```
+
+---
+
+## 2. Lemmatize
+
+This step reads the filtered CSV and adds a `lemmatized_text` column.
+
+```bash
+python lemmatize.py \
+  --input data/edcs_filtered_inscriptions.csv \
+  --output data/edcs_lemmatized_inscriptions.csv
+```
+
+---
+
+## 3. Score
+
+This step reads the lemmatized CSV, calculates architectural scores, and writes the scored output.
+
+```bash
+python score.py \
+  --input data/edcs_lemmatized_inscriptions.csv \
+  --output output/edcs_architectural_scores.csv \
+  --high-output output/edcs_architectural_scores_gt50.csv
+```
+
+To disable creation of per-score-bin subset CSV files, use:
+
+```bash
+python score.py --no-subsets
+```
+
+---
+
+## Notes
+
+- `preprocess.py` may prompt interactively for excluded provinces unless `--exclude-provinces` or `--no-prompt` is used.
+- `lemmatize.py` uses spaCy and needs the model installed.
+- `score.py` expects the lemmatized data to contain a `lemmatized_text` column.
 
 ### `gliner-eval.py`
 
@@ -102,24 +160,6 @@ Evaluates **GLiNER NER models** against the dictionary-based architectural terms
 - F1 score
 - Percentage and count of overlapping terms
 - Number of inscriptions with at least one shared term
-
----
-
-## Requirements
-
-- Python 3.9+
-- Core libraries:
-  - `pandas`, `numpy`, `scikit-learn`
-  - `spacy` (+ `la_core_web_md`)
-  - `gliner`
-
----
-
-## Typical Workflow
-
-1. Run `arch-score.py` to filter inscriptions and compute architectural scores.
-2. Inspect or subset results in the `output/` directory.
-3. Run `gliner-eval.py` on a scored sample to compare dictionary-based detection with GLiNER models.
 
 ---
 
