@@ -1,7 +1,6 @@
 data/EDCS_text_cleaned_2022-09-12.json
 data/edcs_lemmatized_inscriptions.csv
 data/sample-for-lemm.csv
-data/sample.csv
 data/lemm-sample.csv
 data/edcs_filtered_inscriptions.csv
 test-lemm-eval.csv
