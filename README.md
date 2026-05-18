@@ -26,9 +26,9 @@ EccLexica is being developed as part of the ANR E-cclesia project.
 │
 ├── output/
 │
-├── inscr-preprocess.py
-├── inscr-lemmatize.py
-├── inscr-score.py
+├── inscr-inscr-preprocess.py
+├── inscr-inscr-lemmatize.py
+├── inscr-inscr-score.py
 ├── gliner-eval.py
 └── README.md
 ```
@@ -59,9 +59,9 @@ data/EDCS_text_cleaned_2022-09-12.json
 
 This repository includes three standalone command-line scripts for a split workflow:
 
-1. `preprocess.py` — filter raw JSON inscription data by date and province.
-2. `lemmatize.py` — lemmatize filtered texts with spaCy.
-3. `score.py` — calculate architectural scores from lemmatized texts.
+1. `inscr-preprocess.py` — filter raw JSON inscription data by date and province.
+2. `inscr-lemmatize.py` — lemmatize filtered texts with spaCy.
+3. `inscr-score.py` — calculate architectural scores from lemmatized texts.
 
 ---
 
@@ -88,7 +88,7 @@ python -m spacy download la_core_web_md
 This step loads a JSON file, filters inscriptions by the default date range and excluded provinces, and saves the filtered CSV.
 
 ```bash
-python preprocess.py \
+python inscr-preprocess.py \
   --input data/EDCS_text_cleaned_2022-09-12.json \
   --output data/edcs_filtered_inscriptions.csv
 ```
@@ -96,7 +96,7 @@ python preprocess.py \
 Use `--exclude-provinces` to supply a comma-separated list of provinces to exclude without an interactive prompt:
 
 ```bash
-python preprocess.py --exclude-provinces "Achaia,Aegyptus,Syria" --no-prompt
+python inscr-preprocess.py --exclude-provinces "Achaia,Aegyptus,Syria" --no-prompt
 ```
 
 ---
@@ -106,7 +106,7 @@ python preprocess.py --exclude-provinces "Achaia,Aegyptus,Syria" --no-prompt
 This step reads the filtered CSV and adds a `lemmatized_text` column.
 
 ```bash
-python lemmatize.py \
+python inscr-lemmatize.py \
   --input data/edcs_filtered_inscriptions.csv \
   --output data/edcs_lemmatized_inscriptions.csv
 ```
@@ -118,7 +118,7 @@ python lemmatize.py \
 This step reads the lemmatized CSV, calculates architectural scores, and writes the scored output.
 
 ```bash
-python score.py \
+python inscr-score.py \
   --input data/edcs_lemmatized_inscriptions.csv \
   --output output/edcs_architectural_scores.csv \
   --high-output output/edcs_architectural_scores_gt50.csv
@@ -127,16 +127,16 @@ python score.py \
 To disable creation of per-score-bin subset CSV files, use:
 
 ```bash
-python score.py --no-subsets
+python inscr-score.py --no-subsets
 ```
 
 ---
 
 ## Notes
 
-- `preprocess.py` may prompt interactively for excluded provinces unless `--exclude-provinces` or `--no-prompt` is used.
-- `lemmatize.py` uses spaCy and needs the model installed.
-- `score.py` expects the lemmatized data to contain a `lemmatized_text` column.
+- `inscr-preprocess.py` may prompt interactively for excluded provinces unless `--exclude-provinces` or `--no-prompt` is used.
+- `inscr-lemmatize.py` uses spaCy and needs the model installed.
+- `inscr-score.py` expects the lemmatized data to contain a `lemmatized_text` column.
 
 ### `gliner-eval.py`
 
