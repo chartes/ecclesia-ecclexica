@@ -93,7 +93,7 @@ python inscr-preprocess.py \
   --output data/edcs_filtered_inscriptions.csv
 ```
 
-Use `--exclude-provinces` to supply a comma-separated list of provinces to exclude without an interactive prompt:
+Use `--exclude-provinces` to supply a comma-separated list of provinces to exclude:
 
 ```bash
 python inscr-preprocess.py --exclude-provinces "Achaia,Aegyptus,Syria" --no-prompt
